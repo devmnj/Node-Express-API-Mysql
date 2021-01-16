@@ -5,10 +5,13 @@ require("dotenv").config();
 const Todo = require("./models/todo.model");
 const app = express();
 app.use(bodyParser.urlencoded({extended:false})) 
-
+app.use(bodyParser.json())
 //Test DB
 db.authenticate()
-  .then(() => console.log("Database connected"))
+  .then(() => {
+      console.log("Database connected")
+    db.sync()
+    })
   .catch((e) => console.log("Error:" + e));
 app.get("/", (req, res) => {
   res.send("Hello world");
@@ -45,7 +48,7 @@ app.get("/todo/:id", (req, res, next) => {
       }))
   });
 
-app.put('/todo/update/:id',bodyParser.json(),(req, res,next)=>{
+app.put('/todo/update/:id' ,(req, res,next)=>{
     const id =req.params.id
     const {item,description}=req.body
     Todo.update({item:item},{where:{id:id}})
